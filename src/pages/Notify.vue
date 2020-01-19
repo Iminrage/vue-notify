@@ -24,6 +24,11 @@
       </button>
       <Preloader v-if="loading" :width="45" :height="45"></Preloader>
       <Notification v-if="!loading" :messages="messages"></Notification>
+      <button
+        class="notification__btn"
+        v-if="!loading"
+        @click="onlyMain = !onlyMain"
+      >{{onlyMain ? "Show more" : "Show less"}}</button>
     </div>
   </div>
 </template>
@@ -35,12 +40,17 @@ export default {
   components: { Notification, Preloader },
   data() {
     return {
-      loading: true
+      loading: true,
+      onlyMain: true
     };
   },
   computed: {
     messages() {
-      return this.$store.getters.getMessage;
+      if (this.onlyMain) {
+        return this.$store.getters.getMainMessages;
+      } else {
+        return this.$store.getters.getAllMessages;
+      }
     }
   },
   mounted() {
@@ -52,7 +62,7 @@ export default {
       axios
         .get("https://tocode.ru/static/c/vue-pro/notifyApi.php")
         .then(response => {
-          this.$store.dispatch("setNotify", response.data.notify);
+          this.$store.dispatch("setMessages", response.data.notify);
           this.loading = false;
         })
         .catch(err => {

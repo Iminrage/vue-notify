@@ -3,18 +3,25 @@ export default {
     messages: []
   },
   mutations: {
-    setNotify(state, payload) {
+    setMessages(state, payload) {
       state.messages = payload;
     }
   },
   actions: {
-    setNotify({ commit }, payload) {
-      commit("setNotify", payload);
+    setMessages({ commit }, payload) {
+      commit("setMessages", payload);
     }
   },
   getters: {
-    getMessage(state) {
+    getAllMessages(state) {
       return state.messages;
+    },
+    getMainMessages(state) {
+      return state.messages.filter(message => {
+        if (message.main) {
+          return true;
+        }
+      });
     }
   }
 };
